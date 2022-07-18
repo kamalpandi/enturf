@@ -1,9 +1,14 @@
 from rest_framework import serializers
 from .models import Admin, User
 
-#create 
+
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        help_text='Leave empty if no change needed',
+        style={'input_type': 'password', 'placeholder': 'Password'}
+    )
 
     class Meta:
         model = User
@@ -20,39 +25,10 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
             return user
 
-#update  
-class UserUpdateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = User
-        fields = [
-            'id',
-            'username',
-            'email',
-            'password',
-        ]
-
-        def update(self, instance, validated_data):
-            instance.username =validated_data('username', instance.username)
-            instance.email = validated_data('email', instance.email)
-            instance.password = validated_data('password', instance.password)
-            instance.save()
-            return instance
-
-
-
 class AdminSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Admin
-        fields = '__all__'
-
-class AdminUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Admin
-        fields = '__all__'
-
-    def update(self, instance, validated_data):
-        instance.__all__ = validated_data('__all__', instance.__all__)
-        instance.save()
-        return instance
+        fields = ['user','id','firstName','lastName','mobileNumber','dateOfBirth','gender','address','pincode']
+        depth = 1
+        

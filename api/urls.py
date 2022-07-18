@@ -3,15 +3,13 @@ from django.urls import path, include, re_path
 from . import views
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-from .views import UserListViewset, UserUpdateViewset,AdminListViewset,AdminUpdateViewset
+from .views import UserListViewset, AdminListViewset
 from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register('list_user', UserListViewset, basename='list_user')
-router.register('update_user', UserUpdateViewset, basename='update_user')
-router.register('create_admin', AdminListViewset, basename='create_admin')
-router.register('update_admin', AdminUpdateViewset, basename='update_admin')
+router.register('crud_user', UserListViewset, basename='crud_user')
+router.register('crud_admin', AdminListViewset, basename='crud_admin')
 
 
 urlpatterns = [
