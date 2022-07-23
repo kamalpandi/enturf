@@ -17,3 +17,18 @@ class Admin(models.Model):
 
     def __str__(self):
         return str(self.firstName)
+
+class turfDetails(models.Model):
+    admin = models.OneToOneField(Admin, on_delete=models.CASCADE)
+
+    turfName = models.CharField(max_length=125)
+    mobileNumber = models.CharField(max_length=12)
+    openingTime = models.TimeField(auto_now=False, auto_now_add=False)
+    cloasingTime = models.TimeField(auto_now=False, auto_now_add=False)
+    addressOfTurf =  models.CharField(max_length=255)
+    aminities = models.CharField(max_length=225)
+    generalTurfImages =  models.ImageField(upload_to='images', blank=True,null = True)
+    
+    def __str__(self):
+        return str(self.turfName)
+
