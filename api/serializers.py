@@ -1,5 +1,6 @@
+from dataclasses import fields
 from rest_framework import serializers
-from .models import Admin, User, turfDetails
+from .models import Admin, User, turfDetails, turfImages
 from django.contrib.auth import get_user_model
 from drf_writable_nested import WritableNestedModelSerializer
 
@@ -38,12 +39,17 @@ class AdminSerializer(serializers.ModelSerializer):
         fields = ['userName','id','firstName','lastName','mobileNumber','dateOfBirth','gender','address','pincode','user']
 
 class TurfDetailsSerializer(serializers.ModelSerializer):
-    firstName =serializers.CharField(source='admin.firstName',read_only=True)
-    generalTurfImages = serializers.ImageField(max_length=None, allow_empty_file=False,use_url=True,required=False)
+    firstName = serializers.CharField(source='admin.firstName',read_only=True)
     class Meta:
         model = turfDetails
-        fields = '__all__'
-         
+        fields = '__all__' #['images','id','firstName','turfName','mobileNumber','openingTime','cloasingTime','addressOfTurf','aminities','admin',]
+
+
+class TurfImageSerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model = turfImages
+        fields = '__all__' #['turfDetails','generalTurfImages']
 
 
 

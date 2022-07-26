@@ -11,6 +11,7 @@ router = DefaultRouter()
 router.register('create_user', UserListViewset, basename='crud_user')
 router.register('create_admin', AdminListViewset, basename='crud_admin')
 router.register(r'turf_details',views.TurfDetailsViewset, basename='add_turf_for_admin')
+router.register(r'turf_image',views.TurfImageViewset, basename='add_image_for_admin')
 
 
 urlpatterns = [

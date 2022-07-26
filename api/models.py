@@ -27,8 +27,13 @@ class turfDetails(models.Model):
     cloasingTime = models.TimeField(auto_now=False, auto_now_add=False)
     addressOfTurf =  models.CharField(max_length=255)
     aminities = models.CharField(max_length=225)
-    generalTurfImages =  models.ImageField(upload_to='images', blank=True,null = True)
     
     def __str__(self):
         return str(self.turfName)
 
+class turfImages(models.Model):
+    turfDetails = models.ForeignKey(turfDetails,on_delete=models.CASCADE)
+    generalTurfImages =  models.ImageField(upload_to='media/images', blank=True,null = True)
+
+    def __str__(self):
+        return self.turfDetails.turfName
