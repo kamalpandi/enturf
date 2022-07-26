@@ -46,7 +46,7 @@ class TurfDetailsSerializer(serializers.ModelSerializer):
 
 
 class TurfImageSerializer(serializers.ModelSerializer):
-   
+    turfName = serializers.CharField(source='turfDetails.turfName',read_only=True)
     class Meta:
         model = turfImages
         fields = '__all__' #['turfDetails','generalTurfImages']
