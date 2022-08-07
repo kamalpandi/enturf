@@ -1,8 +1,10 @@
 from dataclasses import fields
+from pyexpat import model
 from rest_framework import serializers
 from .models import Admin, User, turfDetails, turfImages
 from django.contrib.auth import get_user_model
 from drf_writable_nested import WritableNestedModelSerializer
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -21,14 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
             'id',
             'username',
             'email',
-            'password',
+            'password',            
         ]
-
-        def create(self, validated_data):
-            user = super(UserSerializer, self).create(validated_data)
-            user.set_password(validated_data['password'])
-            user.save()
-            return user
 
 #"create_admin": "http://127.0.0.1:8000/crud_admin/", 
 class AdminSerializer(serializers.ModelSerializer):
@@ -36,21 +32,28 @@ class AdminSerializer(serializers.ModelSerializer):
     #user = serializers.CharField(source='user.username',read_only=True)
     class Meta:
         model = Admin
-        fields = ['userName','id','firstName','lastName','mobileNumber','dateOfBirth','gender','address','pincode','user']
+        fields = ['userName','id','firstName','lastName','mobileNumber','email','dateOfBirth','gender','address','pincode','user']
 
 class TurfDetailsSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='admin.firstName',read_only=True)
     class Meta:
         model = turfDetails
         fields = '__all__' #['images','id','firstName','turfName','mobileNumber','openingTime','cloasingTime','addressOfTurf','aminities','admin',]
-
-
+        
 class TurfImageSerializer(serializers.ModelSerializer):
+    #generalTurfImages =serializers.ImageField()
     turfName = serializers.CharField(source='turfDetails.turfName',read_only=True)
+    #turfDetails = serializers.CharField(source='turfDetails.id',read_only=True)
     class Meta:
         model = turfImages
-        fields = '__all__' #['turfDetails','generalTurfImages']
+        fields = '__all__' #['id','turfDetails','generalTurfImages','turfName']
 
+
+    # def create(self, validated_data):
+
+    #     return turfImages.objects.create(validated_data)
+    # def update(self, validated_data):
+    #     return turfImages.objects.update(validated_data)
 
 
 
