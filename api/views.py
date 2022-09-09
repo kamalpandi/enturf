@@ -1,79 +1,92 @@
-from django.http import JsonResponse
-from django.urls import is_valid_path
-from requests import request
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from .serializers import UserSerializer, AdminSerializer,TurfDetailsSerializer,TurfImageSerializer
-from .models import Admin,turfDetails,turfImages
+from .serializers import BookingRecordSerializer, CanceledReportSerializer, PaymentReportSerializer, PlayersAccountSerializer, UserSerializer, AdminSerializer, TurfDetailsSerializer, TurfImageSerializer, GroundDetailsSerializer, GroundImagesSerializer, GroundPricingSerializer, CoachingTimeSerializer, GetUserSerializer
+from .models import Admin, BookingReport, CanceledReport, PaymentReport, PlayersAccount, turfDetails, turfImages, GroundDetails, GroundImages, GroundPricing, CoachingTime
 from rest_framework import viewsets
 from django.contrib.auth.models import User
-from rest_framework import status
-"""
-def post(self, request, format=None):
-    print(request.data)
-    serializer = TurfDetailsSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Responce(serialier.data, status=status.HTTP_200_OK)
-    else:
-        return Responce(serialier.errors, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework import status, generics
 
-"""
 
 class UserListViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    #http_method_names = ['get', 'post']
+    #http_method_names =['get', 'post']
+
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter(id=self.request.user.id)
+        return query_set
+
+
+class GetUserAccountList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = GetUserSerializer
+    #permission_classes = [IsAuthenticated]
+    #http_method_names = ['get']
+
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter(id=self.request.user.id)
+        return query_set
 
 
 class AdminListViewset(viewsets.ModelViewSet):
-    queryset = Admin.objects.all()  # filter(id=self.request.user.id)
-    serializer_class = AdminSerializer   
-    #permission_classes = [IsAuthenticated]
+    queryset = Admin.objects.all()
+    serializer_class = AdminSerializer
     #http_method_names = ['get', 'post']
+    #permission_classes = [IsAuthenticated]
+
+    # def get_queryset(self):
+    #     queryset = self.queryset
+    #     user = self.request.user
+    #     query_set = queryset.filter(user=user)
+    #     return query_set
+
 
 class TurfDetailsViewset(viewsets.ModelViewSet):
     queryset = turfDetails.objects.all()
     serializer_class = TurfDetailsSerializer
-    #permission_classes = [IsAuthenticated]
-
-# def modify_input_for_multiple_files(turfDetails, generalTurfImages):
-#     dict = {}
-#     dict['turfDetails'] = turfDetails
-#     dict['generalTurfImages'] = generalTurfImages
-#     return dict
 
 
 class TurfImageViewset(viewsets.ModelViewSet):
-    queryset = turfImages.objects.all()#filter(turfDetails__turfName='pk')
+    queryset = turfImages.objects.all()
     serializer_class = TurfImageSerializer
-    #permission_classes = [IsAuthenticated]
 
 
+class GroundDetailsViewset(viewsets.ModelViewSet):
+    queryset = GroundDetails.objects.all()
+    serializer_class = GroundDetailsSerializer
 
-    # def get(self, request):
-    #     all_image =turfImages.objects.all()
-    #     serializer = TurfImageSerializer(all_image, many=True)
-    #     return JsonResponse(serializer.data, safe= False)
 
-    # def post(self, request, *args, **kwargs):
-    #     turfDetails = request.data['turfDetails']
+class GroundImagesViewset(viewsets.ModelViewSet):
+    queryset = GroundImages.objects.all()
+    serializer_class = GroundImagesSerializer
 
-    #     generalTurfImages = dict((request.data).lists()['generalTurfImages'])
-    #     flag = 1
-    #     arr=[]
-    #     for img_name in generalTurfImages:
-    #         modified_data = modify_input_for_multiple_files(turfDetails,img_name)
 
-    #         file_serializer =TurfImageSerializer(data=modified_data)
-    #         if file_serializer.is_valid():
-    #             file_serializer.save()
-    #             arr.append(file_serializer.data)
-    #         else:
-    #             flag = 0
-            
-    #         if flag == 1:
-    #             return Response(arr, status=status.HTTP_201_CREATED)
-    #         else:
-    #             return Response(arr, status=status.HTTP_400_BAD_REQUEST)
+class GroundPricingViewset(viewsets.ModelViewSet):
+    queryset = GroundPricing.objects.all()
+    serializer_class = GroundPricingSerializer
+
+
+class CoachingTimeViewset(viewsets.ModelViewSet):
+    queryset = CoachingTime.objects.all()
+    serializer_class = CoachingTimeSerializer
+
+
+class PlayerAccountViewset(viewsets.ModelViewSet):
+    queryset = PlayersAccount.objects.all()
+    serializer_class = PlayersAccountSerializer
+
+
+class PaymentReportViewset(viewsets.ModelViewSet):
+    queryset = PaymentReport.objects.all()
+    serializer_class = PaymentReportSerializer
+
+
+class BookingReportViewset(viewsets.ModelViewSet):
+    queryset = BookingReport.objects.all()
+    serializer_class = BookingRecordSerializer
+
+
+class CanceledReportViewset(viewsets.ModelViewSet):
+    queryset = CanceledReport.objects.all()
+    serializer_class = CanceledReportSerializer
