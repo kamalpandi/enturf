@@ -12,10 +12,6 @@ class Admin(models.Model):
     mobileNumber = models.CharField(max_length=12, unique=True)
     email = models.EmailField(max_length=254, unique=True)
     dateOfBirth = models.DateField()
-    gender = models.CharField(max_length=10)
-    address = models.CharField(max_length=225)
-    pincode = models.CharField(max_length=7)
-
     start_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -24,13 +20,16 @@ class Admin(models.Model):
 
 class turfDetails(models.Model):
     admin = models.OneToOneField(Admin, on_delete=models.CASCADE)
-
     turfName = models.CharField(max_length=125)
     mobileNumber = models.CharField(max_length=12, unique=True)
     openingTime = models.TimeField(auto_now=False, auto_now_add=False)
-    cloasingTime = models.TimeField(auto_now=False, auto_now_add=False)
+    closingTime = models.TimeField(auto_now=False, auto_now_add=False)
+    country = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)    
+    city = models.CharField(max_length=255)
     addressOfTurf = models.CharField(max_length=255)
-    aminities = models.CharField(max_length=225)
+    pincode = models.CharField(max_length=255)
+    amenities = models.CharField(max_length=225)
 
     def __str__(self):
         return str(self.turfName)
@@ -76,13 +75,13 @@ class GroundPricing(models.Model):
     slotClosingTime = models.TimeField(
         blank=False, auto_now=False, auto_now_add=False)
     price = models.IntegerField()
+    day = models.CharField(max_length=225)
 
     def __str__(self):
         return str(self.groundId.groundName)
 
 
 class CoachingTime(models.Model):
-    coachingFlag = models.BooleanField(default=False)
     groundId = models.OneToOneField(GroundDetails, on_delete=models.CASCADE)
     startingTime = models.TimeField(blank=True)
     endingTime = models.TimeField(blank=True)
