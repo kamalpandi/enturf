@@ -29,8 +29,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password',
         ]
 
-   
-
 
 class AdminSerializer(serializers.ModelSerializer):
     userName = serializers.CharField(source='user.username', read_only=True)
@@ -38,8 +36,8 @@ class AdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Admin
-        fields = '__all__'
-        depth= 2
+        fields = ['user', 'userName', 'id', 'firstName',
+                  'lastName', 'mobileNumber', 'email', 'dateOfBirth']
 
 
 class TurfDetailsSerializer(serializers.ModelSerializer):
@@ -50,7 +48,7 @@ class TurfDetailsSerializer(serializers.ModelSerializer):
         # ['images','id','firstName','turfName','mobileNumber','openingTime','cloasingTime','addressOfTurf','aminities','admin',]
         fields = '__all__'
 
-        
+
 class Base64ImageField(serializers.ImageField):
     """
     A Django REST framework field for handling image-uploads through raw post data.
@@ -82,7 +80,8 @@ class Base64ImageField(serializers.ImageField):
                 self.fail('invalid_image')
 
             # Generate file name:
-            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            # 12 characters are more than enough.
+            file_name = str(uuid.uuid4())[:12]
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
 
@@ -100,6 +99,7 @@ class Base64ImageField(serializers.ImageField):
 
         return extension
 
+
 class TurfImageSerializer(serializers.ModelSerializer):
     #generalTurfImages =serializers.ImageField()
     turfName = serializers.CharField(
@@ -108,6 +108,7 @@ class TurfImageSerializer(serializers.ModelSerializer):
     generalTurfImages = Base64ImageField(
         max_length=None, use_url=True,
     )
+
     class Meta:
         model = turfImages
         # ['id','turfDetails','generalTurfImages','turfName']
@@ -147,6 +148,47 @@ class CoachingTimeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CoachingTime
+        fields = '__all__'
+
+class GetGroundPricingSerializer(serializers.ModelSerializer):
+    groundName = serializers.CharField(
+        source='GroundDetails.groundName', read_only=True)
+
+    class Meta:
+        model = GroundPricing
+        fields = '__all__'
+
+
+class GetGroundDetailsSerializer(serializers.ModelSerializer):
+    turfName = serializers.CharField(
+        source='turfDetails.turfName', read_only=True)
+    gimage = GroundImagesSerializer(
+        read_only=True, many=True,source='GroundImages')
+    gprice = GetGroundPricingSerializer(many=True,read_only=True, source = 'GroundPricing')
+    class Meta:
+        model = GroundDetails
+        fields = '__all__'
+
+
+class GetTurfDetailSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(source='admin.firstName', read_only=True)
+    timage = TurfImageSerializer(
+        read_only=True, many=True, source='turfImages')
+    gdetails = GetGroundDetailsSerializer(
+        read_only=True, many=True, source='GroundDetails')
+
+    class Meta:
+        model = turfDetails
+    
+        fields = '__all__'
+       
+
+
+class GetAllAdminDataSerializer(serializers.ModelSerializer):
+    tdetails = GetTurfDetailSerializer(read_only=True, source='turfDetails')
+
+    class Meta:
+        model = Admin
         fields = '__all__'
 
 

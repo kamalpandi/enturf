@@ -1,9 +1,10 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from .serializers import BookingRecordSerializer, CanceledReportSerializer, PaymentReportSerializer, PlayersAccountSerializer, UserSerializer, AdminSerializer, TurfDetailsSerializer, TurfImageSerializer, GroundDetailsSerializer, GroundImagesSerializer, GroundPricingSerializer, CoachingTimeSerializer, GetUserSerializer
+from .serializers import GetAllAdminDataSerializer, BookingRecordSerializer, CanceledReportSerializer, PaymentReportSerializer, PlayersAccountSerializer, UserSerializer, AdminSerializer, TurfDetailsSerializer, TurfImageSerializer, GroundDetailsSerializer, GroundImagesSerializer, GroundPricingSerializer, CoachingTimeSerializer, GetUserSerializer
 from .models import Admin, BookingReport, CanceledReport, PaymentReport, PlayersAccount, turfDetails, turfImages, GroundDetails, GroundImages, GroundPricing, CoachingTime
 from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework import status, generics
+from rest_framework.response import Response
 
 
 class UserListViewset(viewsets.ModelViewSet):
@@ -41,6 +42,44 @@ class AdminListViewset(viewsets.ModelViewSet):
     #     query_set = queryset.filter(user=user)
     #     return query_set
 
+
+class AdminWithTurfDetailsViewset(generics.GenericAPIView):
+    queryset = turfImages.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        admin = Admin.objects.all()
+        tdetails = turfDetails.objects.all()
+        turfimages = turfImages.objects.all()
+        gdetails = GroundDetails.objects.all()
+        gimages = GroundImages.objects.all()
+        context = {
+            "request": request,
+        }
+        admin_serializer = AdminSerializer(admin, many=True, context=context)
+        tdetails_serializer = TurfDetailsSerializer(
+            tdetails, many=True, context=context)
+        timage_serializer = TurfImageSerializer(
+            turfimages, many=True, context=context)
+        gdetails_serializer = GroundDetailsSerializer(
+            gdetails, many=True, context=context)
+        gimages_serializer = GroundImagesSerializer(
+            gimages, many=True, context=context)
+        gimages_serializer = GroundImagesSerializer(
+            gimages, many=True, context=context)
+        response = admin_serializer.data + tdetails_serializer.data + \
+            timage_serializer.data + gdetails_serializer.data + gimages_serializer.data
+        return Response(response)
+
+
+class GetAllAdminDataView(generics.ListAPIView):
+    queryset = Admin.objects.all()
+    serializer_class = GetAllAdminDataSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        queryset = self.queryset
+        user = self.request.user
+        query_set = queryset.filter(user=user)
+        return query_set
 
 class TurfDetailsViewset(viewsets.ModelViewSet):
     queryset = turfDetails.objects.all()

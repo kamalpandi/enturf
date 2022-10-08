@@ -19,13 +19,14 @@ class Admin(models.Model):
 
 
 class turfDetails(models.Model):
-    admin = models.OneToOneField(Admin, on_delete=models.CASCADE)
+    admin = models.OneToOneField(
+        Admin, on_delete=models.CASCADE, related_name='turfDetails')
     turfName = models.CharField(max_length=125)
     mobileNumber = models.CharField(max_length=12, unique=True)
     openingTime = models.TimeField(auto_now=False, auto_now_add=False)
     closingTime = models.TimeField(auto_now=False, auto_now_add=False)
     country = models.CharField(max_length=255)
-    state = models.CharField(max_length=255)    
+    state = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     addressOfTurf = models.CharField(max_length=255)
     pincode = models.CharField(max_length=255)
@@ -36,7 +37,8 @@ class turfDetails(models.Model):
 
 
 class turfImages(models.Model):
-    turfDetails = models.ForeignKey(turfDetails, on_delete=models.CASCADE)
+    turfDetails = models.ForeignKey(
+        turfDetails, on_delete=models.CASCADE, related_name='turfImages')
     generalTurfImages = models.ImageField(
         upload_to="images", blank=True, null=True)
 
@@ -45,7 +47,8 @@ class turfImages(models.Model):
 
 
 class GroundDetails(models.Model):
-    turfId = models.ForeignKey(turfDetails, on_delete=models.CASCADE)
+    turfId = models.ForeignKey(
+        turfDetails, on_delete=models.CASCADE, related_name='GroundDetails')
     groundName = models.CharField(max_length=225)
     groundOpeningTime = models.TimeField(
         blank=False, auto_now=False, auto_now_add=False)
@@ -60,7 +63,8 @@ class GroundDetails(models.Model):
 
 
 class GroundImages(models.Model):
-    GroundDetails = models.ForeignKey(GroundDetails, on_delete=models.CASCADE)
+    GroundDetails = models.ForeignKey(
+        GroundDetails, on_delete=models.CASCADE, related_name='GroundImages')
     groundImages = models.ImageField(
         upload_to="groundImages", blank=True, null=True)
 
@@ -69,7 +73,7 @@ class GroundImages(models.Model):
 
 
 class GroundPricing(models.Model):
-    groundId = models.ForeignKey(GroundDetails, on_delete=models.CASCADE)
+    groundId = models.ForeignKey(GroundDetails, on_delete=models.CASCADE, related_name='GroundPricing')
     slotOpeningTime = models.TimeField(
         blank=False, auto_now=False, auto_now_add=False)
     slotClosingTime = models.TimeField(

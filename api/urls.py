@@ -1,6 +1,6 @@
 from django.db import router
 from django.urls import path, include
-from .views import BookingReportViewset, CanceledReportViewset, PaymentReportViewset, PlayerAccountViewset, UserListViewset, AdminListViewset, TurfDetailsViewset, TurfImageViewset, GroundDetailsViewset, GroundImagesViewset, GroundPricingViewset, CoachingTimeViewset, GetUserAccountList  # , UserCreateAPIView
+from .views import GetAllAdminDataView, AdminWithTurfDetailsViewset, BookingReportViewset, CanceledReportViewset, PaymentReportViewset, PlayerAccountViewset, UserListViewset, AdminListViewset, TurfDetailsViewset, TurfImageViewset, GroundDetailsViewset, GroundImagesViewset, GroundPricingViewset, CoachingTimeViewset, GetUserAccountList  # , UserCreateAPIView
 from rest_framework.routers import DefaultRouter
 
 
@@ -30,4 +30,6 @@ router.register(r'canceled_report', CanceledReportViewset,
 urlpatterns = [
     path('', include(router.urls)),
     path('getuser', GetUserAccountList.as_view(), name='getuser'),
+    path('vi', AdminWithTurfDetailsViewset.as_view(), name='vi'),
+    path('get_admin_data', GetAllAdminDataView.as_view(), name='get_admin_data'),
 ]
